@@ -1,0 +1,14 @@
+# Compiled binaries & Arduino build files
+*.hex
+*.bin
+*.elf
+build/
+.arduino15/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
