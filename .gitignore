@@ -5,6 +5,20 @@
 build/
 .arduino15/
 
+# PlatformIO build artifacts
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Python Virtual Environments & Bytecode
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+laptop_controller/session_debug.log
+
 # OS and Editor files
 .DS_Store
 Thumbs.db

@@ -124,3 +124,22 @@ binzo/
 3. Select Board: **AI Thinker ESP32-CAM**.
 4. Enable **PSRAM: Enabled**, Partition Scheme: **Huge APP (3MB No OTA / 1MB SPIFFS)**.
 5. Flash, disconnect GPIO 0 from GND, and press RESET.
+
+
+---
+
+## 7. M5Stack Core2 4x4 Mecanum Drive & RadioMaster Pocket Controller
+
+In branch `m5core2-mecanum-swerve`, BINZO also supports an **M5Stack Core2 + 4-Channel Encoder Motor Module (BL5617)** stack with real-time wireless UDP control via a **RadioMaster Pocket** RC transmitter (USB HID) connected through a laptop bridge.
+
+### Features
+- **Holonomic 2D Planar Swerve:** Right joystick controls 2D strafe ($V_x$) and forward/backward ($V_y$) translation; Left joystick controls master speed throttle and yaw ($\omega$) in-place rotation.
+- **Ultra-low latency UDP:** 40 Hz packet streaming with 1 ms Windows high-resolution multimedia timer.
+- **M5 Display Dashboard & Touch Safety:** Live 2D vector indicator, individual motor PWM gauges, WiFi/battery telemetry, and hardened capacitive emergency stop banner.
+- **Live Debug Telemetry (UDP Port 4212):** Live battery voltage, RSSI, loop latency, brownout detection, and failsafe diagnostics streamed back to the laptop HUD and logged to `session_debug.log`.
+
+### Directory Structure
+- **Firmware:** `Binzo/firmware/Binzo_M5Core2/` and `m5core2_firmware/` (PlatformIO + Arduino)
+- **Laptop Bridge:** `laptop_controller/radio_bridge.py`
+- **Quick Launch:** `run_bridge.bat` (controller bridge) and `run_tester.bat` (axis calibration tester)
+- **Setup Guide:** `docs/SETUP_GUIDE.md`

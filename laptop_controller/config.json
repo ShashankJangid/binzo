@@ -1,0 +1,53 @@
+{
+  "comment": "Configuration for RadioMaster Pocket to M5Core2 Mecanum Trash Can",
+  "network": {
+    "target_ip": "192.168.0.121",
+    "udp_port": 4210,
+    "discovery_port": 4211,
+    "log_port": 4212,
+    "send_rate_hz": 40
+  },
+  "joystick": {
+    "deadband": 0.06,
+    "expo": 0.15,
+    "max_speed_pct": 100,
+    "axes": {
+      "right_x_strafe": 0,
+      "right_y_forward": 3,
+      "left_y_throttle": 2,
+      "left_x_yaw": 1
+    },
+    "invert": {
+      "right_x_strafe": false,
+      "right_y_forward": true,
+      "left_y_throttle": false,
+      "left_x_yaw": false
+    },
+    "throttle": {
+      "mode": "unipolar",
+      "idle_is_bottom": true,
+      "center_sprung": false,
+      "bottom_threshold": -0.70
+    },
+    "safety": {
+      "require_arm_switch": false,
+      "arm_button_index": 0,
+      "failsafe_on_zero_throttle": true
+    }
+  },
+  "drivetrain": {
+    "type": "mecanum_4x4",
+    "motor_channels": {
+      "front_left": 0,
+      "front_right": 1,
+      "rear_left": 2,
+      "rear_right": 3
+    },
+    "motor_inversions": {
+      "front_left": 1,
+      "front_right": 1,
+      "rear_left": 1,
+      "rear_right": 1
+    }
+  }
+}
