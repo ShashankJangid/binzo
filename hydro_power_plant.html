@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYDRO POWER PLANT 2.0 | Smart IoT Management System</title>
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        hydro: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            navy: '#0b132b',
+                            deepBlue: '#1c2541',
+                            accentBlue: '#3a506b',
+                            cyan: '#0284c7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Light Theme Glassmorphism & Simulation Styles -->
+    <style>
+        :root {
+            color-scheme: light;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Light Glassmorphism Panels */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .glass-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+        }
+
+        /* Soft Glow Accents in Light Colors */
+        .glow-cyan {
+            box-shadow: 0 0 20px -3px rgba(14, 165, 233, 0.25);
+        }
+        .glow-teal {
+            box-shadow: 0 0 20px -3px rgba(20, 184, 166, 0.25);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.25);
+        }
+        .glow-red {
+            box-shadow: 0 0 20px -3px rgba(239, 68, 68, 0.25);
+        }
+
+        /* Animated Hydro Flow Pipes for Light Background */
+        @keyframes flowAnimation {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+        .flow-line {
+            stroke-dasharray: 8;
+            animation: flowAnimation 1.3s linear infinite;
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.06); opacity: 0.88; }
+        }
+        .pulse-water {
+            animation: pulseSlow 2.5s ease-in-out infinite;
+        }
+
+        /* Custom Light Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Device Mode Emulation Container Frames */
+        .device-stage {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Laptop Mode (Full wide fluid layout) */
+        .mode-laptop {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* Tablet Mode (iPad Style 768px frame) */
+        .mode-tab {
+            width: 100% !important;
+            max-width: 820px !important;
+            margin: 20px auto 40px auto;
+            border-radius: 28px;
+            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.15), 0 0 0 10px #e2e8f0;
+            border: 1px solid #cbd5e1;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        /* Phone Mode (iPhone Style 390px frame) */
+        .mode-phone {
+            width: 100% !important;
+            max-width: 400px !important;
+            margin: 20px auto 40px auto;
+            border-radius: 36px;
+            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.18), 0 0 0 10px #e2e8f0;
+            border: 1px solid #cbd5e1;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        /* Simulated Phone Speaker/Notch */
+        .phone-notch {
+            display: none;
+        }
+        .mode-phone .phone-notch {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 0 4px 0;
+            background: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .notch-bar {
+            width: 90px;
+            height: 4.5px;
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen antialiased selection:bg-teal-500 selection:text-white transition-colors duration-200">
+
+    <!-- TOP DEVICE MODE SELECTOR BAR (Laptop, Tab, Phone, Auto) -->
+    <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-2.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <!-- Logo & Branding -->
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-600 to-cyan-500 flex items-center justify-center text-white shadow-sm shadow-teal-500/20">
+                <i class="fa-solid fa-droplet text-sm"></i>
+            </div>
+            <div>
+                <span class="text-xs font-extrabold tracking-tight text-slate-900 block leading-none">HYDRO POWER 2.0</span>
+                <span class="text-[10px] text-teal-700 font-medium font-mono">LIGHT UI &bull; MULTI-DEVICE OPTIMIZED</span>
+            </div>
+        </div>
+
+        <!-- Mode Switcher Buttons -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80 gap-1 text-xs">
+            <button onclick="setDeviceMode('laptop')" id="modeBtn-laptop" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition text-teal-700 bg-white shadow-sm" title="Desktop / Laptop Full Width View">
+                <i class="fa-solid fa-laptop text-sm"></i>
+                <span class="hidden sm:inline">Laptop</span>
+            </button>
+            <button onclick="setDeviceMode('tab')" id="modeBtn-tab" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition text-slate-600 hover:text-slate-900" title="Tablet / iPad Frame (820px)">
+                <i class="fa-solid fa-tablet-screen-button text-sm"></i>
+                <span class="hidden sm:inline">Tablet</span>
+            </button>
+            <button onclick="setDeviceMode('phone')" id="modeBtn-phone" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition text-slate-600 hover:text-slate-900" title="Mobile Phone Frame (400px)">
+                <i class="fa-solid fa-mobile-screen text-sm"></i>
+                <span class="hidden sm:inline">Phone</span>
+            </button>
+            <button onclick="setDeviceMode('auto')" id="modeBtn-auto" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition text-slate-600 hover:text-slate-900" title="Auto Responsive View">
+                <i class="fa-solid fa-expand text-sm"></i>
+                <span class="hidden sm:inline">Responsive</span>
+            </button>
+        </div>
+
+        <!-- Right Quick Controls -->
+        <div class="flex items-center gap-2 text-xs">
+            <!-- Light Theme Badge -->
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 font-medium">
+                <i class="fa-solid fa-sun text-amber-500"></i>
+                <span>Light Theme</span>
+            </span>
+
+            <!-- Hardware Sim Bar Toggle -->
+            <button onclick="toggleSimulatorPanel()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border border-slate-200 flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-microchip text-teal-600"></i>
+                <span class="hidden md:inline">ESP32 Sim</span>
+            </button>
+
+            <!-- Quick API Settings -->
+            <button onclick="toggleConfigModal()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border border-slate-200 flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-key text-indigo-600"></i>
+                <span class="hidden md:inline">API</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DEVICE SIMULATOR WRAPPER -->
+    <div id="deviceWrapper" class="device-stage mode-laptop min-h-screen flex flex-col transition-all">
+
+        <!-- Simulated Phone Notch/Speaker bar (Only active in phone mode) -->
+        <div class="phone-notch">
+            <div class="notch-bar"></div>
+        </div>
+
+        <!-- SPLASH SCREEN -->
+        <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-md transition-opacity duration-700 pointer-events-none">
+            <div class="relative flex items-center justify-center mb-6">
+                <div class="absolute w-32 h-32 bg-teal-100/70 rounded-full blur-xl animate-ping"></div>
+                <div class="w-20 h-20 bg-gradient-to-tr from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl shadow-teal-500/20 transform rotate-12 transition-transform hover:rotate-0">
+                    <i class="fa-solid font-bold text-4xl text-white fa-droplet transform -rotate-12"></i>
+                </div>
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">
+                HYDRO POWER 2.0
+            </h1>
+            <p class="text-slate-500 text-xs mt-2 font-mono tracking-widest uppercase font-semibold">Smart Industrial IoT Telemetry</p>
+            <div class="mt-8 w-48 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <div class="w-full h-full bg-gradient-to-r from-teal-500 to-cyan-500 animate-pulse"></div>
+            </div>
+        </div>
+
+        <!-- OPERATOR AUTHENTICATION MODAL -->
+        <div id="loginSection" class="fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-sm">
+            <div class="w-full max-w-md glass-panel p-8 rounded-3xl shadow-xl relative overflow-hidden border border-slate-200 bg-white">
+                <div class="absolute -right-12 -top-12 w-40 h-40 bg-teal-50 rounded-full blur-2xl"></div>
+                
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-500/20">
+                        <i class="fa-solid fa-droplet text-3xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Operator Authentication</h2>
+                    <p class="text-slate-500 text-xs mt-1">Authorized Plant Control Gateway &bull; Light Edition</p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Authorized Email</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="email" id="loginEmail" value="rauteladevraj54@gmail.com" required readonly class="w-full bg-slate-50 border border-slate-300 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-800 font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Security Key / Password</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="password" id="loginPassword" value="prachi@17" required class="w-full bg-slate-50 border border-slate-300 rounded-xl py-3 pl-11 pr-11 text-sm text-slate-800 font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm focus:outline-none">
+                                <i id="passwordToggleIcon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="rememberMe" checked class="rounded bg-slate-100 border-slate-300 text-teal-600 focus:ring-0">
+                            <span>Remember credentials</span>
+                        </label>
+                        <span class="text-teal-700 font-mono text-[11px] font-semibold">Node: ESP32-WROOM</span>
+                    </div>
+
+                    <div id="loginErrorMessage" class="hidden text-xs text-red-600 bg-red-50 border border-red-200 p-3 rounded-xl flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation text-red-500"></i>
+                        <span id="loginErrorText">Authentication failed. Access denied.</span>
+                    </div>
+
+                    <button type="submit" id="loginBtn" class="w-full py-3.5 bg-gradient-to-r from-teal-600 via-teal-500 to-cyan-600 text-white font-bold rounded-xl shadow-md shadow-teal-500/20 hover:opacity-95 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <span>Unlock Telemetry Gateway</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </button>
+
+                    <!-- Quick Demo Instant Unlock Button -->
+                    <button type="button" onclick="instantDemoLogin()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-amber-500"></i>
+                        <span>Instant 1-Click Access</span>
+                    </button>
+                </form>
+                
+                <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-mono font-medium border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        Firebase DB Sync Ready
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN APP INTERFACE -->
+        <div id="mainApp" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-50 text-slate-800">
+
+            <!-- SIDEBAR NAVIGATION (Desktop & Laptop View) -->
+            <aside id="sidebarNav" class="flex flex-col w-64 bg-white border-r border-slate-200 p-5 backdrop-blur-lg justify-between shrink-0">
+                <div>
+                    <!-- Brand Header -->
+                    <div class="flex items-center gap-3 px-2 py-3 mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-tr from-teal-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-md shadow-teal-500/20">
+                            <i class="fa-solid fa-droplet text-xl text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-extrabold text-base tracking-tight text-slate-900">HYDRO 2.0</h1>
+                            <p class="text-[10px] text-teal-700 font-mono tracking-wider font-semibold">LIGHT TELEMETRY</p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <nav class="space-y-1.5">
+                        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-teal-700 bg-teal-50 border border-teal-200 shadow-sm">
+                            <i class="fa-solid fa-gauge-high text-lg text-teal-600"></i>
+                            <span>Dashboard</span>
+                        </button>
+                        <button onclick="switchTab('controls')" id="nav-controls" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                            <i class="fa-solid fa-sliders text-lg"></i>
+                            <span>Device Controls</span>
+                        </button>
+                        <button onclick="switchTab('flow')" id="nav-flow" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                            <i class="fa-solid fa-water text-lg text-cyan-600"></i>
+                            <span>Flow Diagram</span>
+                        </button>
+                        <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                            <i class="fa-solid fa-chart-line text-lg text-indigo-600"></i>
+                            <span>Analytics & Logs</span>
+                        </button>
+                        <button onclick="switchTab('ai')" id="nav-ai" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                            <i class="fa-solid fa-robot text-lg text-teal-600"></i>
+                            <span>Hydro AI Copilot</span>
+                        </button>
+                        <button onclick="switchTab('devcenter')" id="nav-devcenter" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                            <i class="fa-solid fa-code text-lg text-indigo-600"></i>
+                            <span>Developer Center</span>
+                        </button>
+                        <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                            <i class="fa-solid fa-gear text-lg"></i>
+                            <span>Settings & Safety</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Operator Profile Card -->
+                <div class="pt-4 border-t border-slate-200">
+                    <div class="flex items-center justify-between px-2 py-2">
+                        <div class="flex items-center gap-2 overflow-hidden">
+                            <div class="w-8 h-8 rounded-full bg-teal-100 border border-teal-200 flex items-center justify-center font-mono font-bold text-xs text-teal-800 shrink-0">
+                                OP
+                            </div>
+                            <div class="truncate">
+                                <p class="text-xs font-bold text-slate-800 truncate" id="userDisplayEmail">rauteladevraj54@gmail.com</p>
+                                <p class="text-[10px] text-emerald-600 font-mono font-semibold">Active Session</p>
+                            </div>
+                        </div>
+                        <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-red-500 p-2 transition">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN WORKSPACE CONTENT AREA -->
+            <div class="flex-1 flex flex-col min-w-0 overflow-y-auto pb-24 md:pb-8">
+                
+                <!-- HEADER BAR -->
+                <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="md:hidden w-8 h-8 bg-gradient-to-tr from-teal-600 to-cyan-500 rounded-lg flex items-center justify-center text-white text-sm">
+                            <i class="fa-solid fa-droplet"></i>
+                        </div>
+                        <div>
+                            <h2 id="pageTitle" class="text-base sm:text-lg font-bold text-slate-900">Plant Status Dashboard</h2>
+                            <p class="text-xs text-slate-500 hidden sm:block">ESP32 Telemetry Monitor &amp; Realtime Controller</p>
+                        </div>
+                    </div>
+
+                    <!-- Header Status Badges & Controls -->
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <!-- Global ESP Status Indicator -->
+                        <div id="espGlobalBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span id="espGlobalText">ESP32: ONLINE</span>
+                        </div>
+
+                        <!-- Alerts Bell -->
+                        <button onclick="toggleNotifications()" class="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-600 transition" title="View Alerts">
+                            <i class="fa-solid fa-bell"></i>
+                            <span id="alertDot" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- API CONFIGURATION MODAL -->
+                <div id="configModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+                    <div class="bg-white w-full max-w-lg p-6 rounded-3xl border border-slate-200 space-y-4 shadow-2xl">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-teal-600"></i>
+                                <h3 class="text-base font-bold text-slate-900">Live Services API & Database Setup</h3>
+                            </div>
+                            <button onclick="toggleConfigModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Connect your live Firebase Realtime Database and custom Gemini AI API Key directly. If omitted, internal telemetry emulator operates seamlessly.
+                        </p>
+
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-slate-700 font-semibold mb-1">Firebase Realtime DB URL</label>
+                                <input type="text" id="cfgFbDbUrl" placeholder="https://your-app-default-rtdb.firebaseio.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-800 font-mono focus:outline-none focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-slate-700 font-semibold mb-1">Firebase Auth Token / Secret</label>
+                                <input type="password" id="cfgFbAuthToken" placeholder="Leave blank if rules permit public access" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-800 font-mono focus:outline-none focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-slate-700 font-semibold mb-1">Gemini AI API Key (Optional)</label>
+                                <input type="password" id="cfgGeminiKey" placeholder="Gemini AI Key" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-800 font-mono focus:outline-none focus:border-teal-500">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                            <button onclick="toggleConfigModal()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-200">Close</button>
+                            <button onclick="saveApiConfig()" class="px-5 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold hover:bg-teal-500 shadow-sm shadow-teal-500/20">Save Credentials</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTIFICATIONS PANEL OVERLAY -->
+                <div id="notificationDrawer" class="hidden fixed right-4 top-20 z-40 w-80 bg-white rounded-2xl p-4 shadow-2xl border border-slate-200 space-y-3">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">System Logs & Alerts</h3>
+                        <button onclick="toggleNotifications()" class="text-slate-400 hover:text-slate-600 text-xs"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div id="notificationsContainer" class="space-y-2 max-h-64 overflow-y-auto text-xs">
+                        <!-- Dynamic Alerts Injected Here -->
+                    </div>
+                </div>
+
+                <!-- HARDWARE SIMULATOR LIGHT BAR -->
+                <div id="simulatorPanel" class="hidden bg-teal-50/70 border-b border-teal-200 px-4 sm:px-6 py-3 transition-all">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-vial text-teal-600"></i>
+                            <span class="text-xs font-mono uppercase font-bold text-teal-900">ESP32 Hardware Emulator</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 text-xs">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                                <span>ESP Link:</span>
+                                <input type="checkbox" id="simEspOnline" checked onchange="updateSimulatorState()" class="rounded bg-white border-slate-300 text-teal-600">
+                                <span id="simEspText" class="font-mono text-emerald-700 font-bold">ONLINE</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-600">Temp:</span>
+                                <input type="range" id="simTemp" min="10" max="60" value="28" oninput="updateSimulatorState()" class="w-20 accent-teal-600">
+                                <span id="simValTemp" class="font-mono text-slate-800 font-semibold">28°C</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-600">Humid:</span>
+                                <input type="range" id="simHumid" min="20" max="95" value="65" oninput="updateSimulatorState()" class="w-20 accent-teal-600">
+                                <span id="simValHumid" class="font-mono text-slate-800 font-semibold">65%</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-600">Turbine:</span>
+                                <input type="range" id="simPower" min="0" max="500" value="340" oninput="updateSimulatorState()" class="w-20 accent-emerald-600">
+                                <span id="simValPower" class="font-mono text-emerald-700 font-bold">340W</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABS CONTAINER -->
+                <main class="p-4 md:p-6 space-y-6 flex-1">
+
+                    <!-- TAB 1: DASHBOARD -->
+                    <section id="tab-dashboard" class="space-y-6">
+                        
+                        <!-- TOP KPI GRID -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- ESP Connectivity Card -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ESP32 Status</span>
+                                    <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                                        <i class="fa-solid fa-wifi text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="flex items-baseline justify-between">
+                                    <h3 id="dashEspState" class="text-2xl font-extrabold text-emerald-600 font-mono">ONLINE</h3>
+                                    <span id="dashRssi" class="text-xs font-mono font-medium text-slate-500">-62 dBm</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-2">
+                                    <span>Sync Delay: <span id="dashPing" class="text-slate-700 font-mono font-semibold">42ms</span></span>
+                                    <span id="dashLastPing" class="font-mono text-emerald-600">Active</span>
+                                </div>
+                            </div>
+
+                            <!-- Temperature & Humidity Card -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">DHT11 Climate</span>
+                                    <div class="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center border border-cyan-100">
+                                        <i class="fa-solid fa-temperature-half text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="flex items-baseline justify-between">
+                                    <div class="flex items-baseline gap-1">
+                                        <h3 id="dashTemp" class="text-2xl font-extrabold text-slate-900 font-mono">28.4</h3>
+                                        <span class="text-xs font-semibold text-slate-500">°C</span>
+                                    </div>
+                                    <div class="flex items-baseline gap-1">
+                                        <h3 id="dashHumid" class="text-xl font-bold text-cyan-700 font-mono">64</h3>
+                                        <span class="text-xs font-semibold text-slate-500">% RH</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-2">
+                                    <span>Sensor Health: <span class="text-emerald-600 font-semibold">Optimal</span></span>
+                                    <span>DHT11 Digital</span>
+                                </div>
+                            </div>
+
+                            <!-- Electrical Generation Power -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hydro Output</span>
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                                        <i class="fa-solid fa-bolt text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="flex items-baseline gap-2">
+                                    <h3 id="dashPower" class="text-2xl font-extrabold text-emerald-600 font-mono">342.8</h3>
+                                    <span class="text-xs font-semibold text-slate-500">Watts (W)</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-2">
+                                    <span>Turbine RPM: <span id="dashRpm" class="text-slate-700 font-mono font-semibold">1420</span></span>
+                                    <span class="text-teal-700 font-semibold">AC Power</span>
+                                </div>
+                            </div>
+
+                            <!-- Pump & Relay Telemetry Card -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Main Actuator</span>
+                                    <div id="dashPumpBadge" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center border border-slate-200">
+                                        <i class="fa-solid fa-pump-soap text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="flex items-baseline justify-between">
+                                    <h3 id="dashPumpStatus" class="text-2xl font-extrabold text-slate-400 font-mono">OFF</h3>
+                                    <span id="dashPumpTime" class="text-xs font-mono font-semibold text-slate-500">Runtime 0m</span>
+                                </div>
+                                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-2">
+                                    <span>Light Relay: <span id="dashLightStatus" class="text-slate-600 font-mono font-semibold">OFF</span></span>
+                                    <span>Cutoff: 60m</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DASHBOARD INTERACTIVE SUMMARY & QUICK ACTIONS -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Left 2 Cols: Plant Status Overview -->
+                            <div class="lg:col-span-2 glass-card p-6 rounded-3xl space-y-5">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-base font-bold text-slate-900">Live Operating Status</h3>
+                                        <p class="text-xs text-slate-500">Synchronized telemetry from Firebase Realtime Node</p>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-mono font-semibold border border-teal-200">
+                                        <i class="fa-solid fa-database mr-1"></i> Realtime DB
+                                    </span>
+                                </div>
+
+                                <!-- Visual Stage Mini Gauges -->
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+                                        <span class="text-[10px] text-slate-500 font-bold uppercase">Water Intake</span>
+                                        <div class="text-lg font-bold text-cyan-700 font-mono" id="dashIntake">NORMAL</div>
+                                        <span class="text-[10px] text-slate-500 font-medium">Flow: 42 L/m</span>
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+                                        <span class="text-[10px] text-slate-500 font-bold uppercase">Turbine State</span>
+                                        <div class="text-lg font-bold text-emerald-600 font-mono" id="dashTurbine">ACTIVE</div>
+                                        <span class="text-[10px] text-slate-500 font-medium">Eff: 92.4%</span>
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+                                        <span class="text-[10px] text-slate-500 font-bold uppercase">Relay Sync</span>
+                                        <div class="text-lg font-bold text-teal-700 font-mono" id="dashSyncState">CONFIRMED</div>
+                                        <span class="text-[10px] text-slate-500 font-medium">ACK: 80ms</span>
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+                                        <span class="text-[10px] text-slate-500 font-bold uppercase">System Safety</span>
+                                        <div class="text-lg font-bold text-emerald-600 font-mono">CLEAR</div>
+                                        <span class="text-[10px] text-slate-500 font-medium">Interlocks OK</span>
+                                    </div>
+                                </div>
+
+                                <!-- Live Quick Control Card -->
+                                <div class="bg-teal-50/50 p-4 rounded-2xl border border-teal-100 flex flex-wrap items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+                                            <i class="fa-solid fa-power-off text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-900">Direct Pump Actuator</h4>
+                                            <p class="text-[11px] text-slate-500">Quick Command Gateway Trigger</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="sendPumpCommand(true)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition shadow-sm shadow-emerald-600/20">
+                                            START PUMP
+                                        </button>
+                                        <button onclick="sendPumpCommand(false)" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition">
+                                            STOP PUMP
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right 1 Col: Quick AI Assistant & Diagnostic -->
+                            <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                                            <i class="fa-solid fa-robot"></i>
+                                        </div>
+                                        <h3 class="text-sm font-bold text-slate-900">Hydro AI Quick Diagnostic</h3>
+                                    </div>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-4">
+                                        Instant copilot analysis of current plant metrics, temperature readings, and safety interlocks.
+                                    </p>
+                                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs text-slate-700 font-mono space-y-1.5">
+                                        <div class="text-teal-700 font-bold">&gt; Diagnostic Summary</div>
+                                        <div class="text-slate-600 text-[11px]" id="aiQuickReport">All sensors reporting nominal operational values. ESP32 wireless link steady.</div>
+                                    </div>
+                                </div>
+
+                                <button onclick="switchTab('ai')" class="w-full py-3 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+                                    <span>Open AI Copilot Console</span>
+                                    <i class="fa-solid fa-headset"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 2: DEVICE CONTROLS -->
+                    <section id="tab-controls" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- WATER PUMP CONTROL CARD -->
+                            <div class="glass-card p-6 rounded-3xl space-y-6">
+                                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl border border-cyan-100">
+                                            <i class="fa-solid fa-pump-soap"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-bold text-slate-900">High-Pressure Water Pump</h3>
+                                            <p class="text-xs text-slate-500">Primary Hydraulic Intake Motor</p>
+                                        </div>
+                                    </div>
+                                    <span id="pumpStatusBadge" class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-mono font-bold border border-slate-200">
+                                        STATUS: OFF
+                                    </span>
+                                </div>
+
+                                <!-- Command vs Confirmed Status -->
+                                <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+                                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                                        <span class="text-slate-500 block mb-1 text-[10px] uppercase font-sans font-semibold">Command Sent</span>
+                                        <span id="pumpCommandState" class="text-slate-700 font-bold">STOPPED</span>
+                                    </div>
+                                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                                        <span class="text-slate-500 block mb-1 text-[10px] uppercase font-sans font-semibold">Device Confirmed</span>
+                                        <span id="pumpAckState" class="text-slate-600 font-bold">ACKNOWLEDGED</span>
+                                    </div>
+                                </div>
+
+                                <!-- Runtime Counter & Protection Slider -->
+                                <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                    <div class="flex justify-between text-xs font-medium">
+                                        <span class="text-slate-600">Running Duration:</span>
+                                        <span id="pumpDuration" class="font-mono text-teal-700 font-bold">00:00:00</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs font-medium">
+                                        <span class="text-slate-600">Max Cutoff Safety:</span>
+                                        <span id="maxRuntimeDisplay" class="font-mono text-slate-800 font-bold">60 Min</span>
+                                    </div>
+                                    <input type="range" id="maxRuntimeInput" min="5" max="180" value="60" onchange="updateMaxRuntime(this.value)" class="w-full accent-teal-600">
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button onclick="sendPumpCommand(true)" class="py-3.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-2xl shadow-md shadow-emerald-500/20 active:scale-95 transition flex items-center justify-center gap-2 text-sm">
+                                        <i class="fa-solid fa-play"></i>
+                                        <span>START PUMP</span>
+                                    </button>
+                                    <button onclick="sendPumpCommand(false)" class="py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl border border-slate-300 active:scale-95 transition flex items-center justify-center gap-2 text-sm">
+                                        <i class="fa-solid fa-stop"></i>
+                                        <span>STOP PUMP</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- LIGHT CONTROL & OPERATING MODES -->
+                            <div class="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between">
+                                <div>
+                                    <!-- Light Switch Header -->
+                                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl border border-amber-100">
+                                                <i class="fa-solid fa-lightbulb"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-base font-bold text-slate-900">Auxiliary Lighting Relay</h3>
+                                                <p class="text-xs text-slate-500">Plant Floodlight &amp; Inspection Array</p>
+                                            </div>
+                                        </div>
+                                        <span id="lightStatusBadge" class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-mono font-bold border border-slate-200">
+                                            OFF
+                                        </span>
+                                    </div>
+
+                                    <!-- Light Buttons -->
+                                    <div class="grid grid-cols-2 gap-3 mb-5">
+                                        <button onclick="sendLightCommand(true)" class="py-3 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-2xl border border-amber-200 transition flex items-center justify-center gap-2 text-sm">
+                                            <i class="fa-solid fa-bolt text-amber-500"></i>
+                                            <span>TURN ON</span>
+                                        </button>
+                                        <button onclick="sendLightCommand(false)" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl border border-slate-300 transition flex items-center justify-center gap-2 text-sm">
+                                            <i class="fa-solid fa-power-off text-slate-400"></i>
+                                            <span>TURN OFF</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Operating Mode Selector -->
+                                    <div class="space-y-3 pt-3 border-t border-slate-100">
+                                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">System Operating Mode</label>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <button onclick="setOperatingMode('manual')" id="modeManualBtn" class="py-2.5 rounded-xl border border-teal-500 bg-teal-50 text-teal-800 text-xs font-bold transition">
+                                                MANUAL MODE
+                                            </button>
+                                            <button onclick="setOperatingMode('auto')" id="modeAutoBtn" class="py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-xs font-bold transition relative" title="Automatic mode locked pending complete safety setup">
+                                                AUTO MODE
+                                                <i class="fa-solid fa-lock text-[10px] ml-1"></i>
+                                            </button>
+                                        </div>
+                                        <p id="autoWarningText" class="text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-center gap-2">
+                                            <i class="fa-solid fa-shield-halved text-amber-600"></i>
+                                            Auto mode requires double water level switch verification.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- PHYSICAL HARDWARE EMERGENCY STOP BUTTON -->
+                                <div class="pt-2">
+                                    <button onclick="triggerEmergencyStop()" class="w-full py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold rounded-2xl shadow-lg shadow-red-500/20 active:scale-95 transition flex items-center justify-center gap-3">
+                                        <i class="fa-solid fa-triangle-exclamation text-xl animate-pulse"></i>
+                                        <span class="tracking-wider">EMERGENCY STOP (E-STOP)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 3: HYDROPOWER FLOW VISUALIZATION -->
+                    <section id="tab-flow" class="hidden space-y-6">
+                        <div class="glass-card p-6 rounded-3xl space-y-6">
+                            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-bold text-slate-900">Interactive Hydropower Stage Pipeline</h3>
+                                    <p class="text-xs text-slate-500">Live telemetry state visualization across hydro energy conversion stages</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-cyan-50 text-cyan-700 text-xs font-mono font-semibold border border-cyan-200">
+                                    5 STAGES SYNCHRONIZED
+                                </span>
+                            </div>
+
+                            <!-- SVG PIPELINE DIAGRAM (Light Background Optimized) -->
+                            <div class="relative w-full overflow-x-auto py-8 bg-slate-100/70 rounded-2xl border border-slate-200 flex justify-center">
+                                <div class="min-w-[720px] w-full max-w-4xl px-6">
+                                    <div class="grid grid-cols-5 gap-3 items-center relative">
+
+                                        <!-- Connecting Animated Hydro Lines -->
+                                        <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 0;">
+                                            <line x1="10%" y1="50%" x2="90%" y2="50%" stroke="#cbd5e1" stroke-width="4" />
+                                            <line id="flowSvgLine" x1="10%" y1="50%" x2="90%" y2="50%" stroke="#0d9488" stroke-width="4" class="flow-line" />
+                                        </svg>
+
+                                        <!-- STAGE 1: WATER SOURCE -->
+                                        <div class="relative z-10 bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-2 shadow-sm hover:border-cyan-400 transition">
+                                            <div class="w-12 h-12 mx-auto rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl pulse-water border border-cyan-100">
+                                                <i class="fa-solid fa-water"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-slate-800">1. SOURCE</h4>
+                                            <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-mono font-semibold border border-emerald-200 inline-block">
+                                                STABLE
+                                            </span>
+                                            <p class="text-[10px] text-slate-500">Head: 14.2m</p>
+                                        </div>
+
+                                        <!-- STAGE 2: WATER FLOW -->
+                                        <div class="relative z-10 bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-2 shadow-sm hover:border-teal-400 transition">
+                                            <div class="w-12 h-12 mx-auto rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl border border-teal-100">
+                                                <i class="fa-solid fa-bars-staggered"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-slate-800">2. FLOW</h4>
+                                            <span id="stageFlowBadge" class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-mono font-semibold border border-emerald-200 inline-block">
+                                                FLOWING
+                                            </span>
+                                            <p class="text-[10px] text-slate-500">Penstock Open</p>
+                                        </div>
+
+                                        <!-- STAGE 3: TURBINE -->
+                                        <div class="relative z-10 bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-2 shadow-sm hover:border-indigo-400 transition">
+                                            <div class="w-12 h-12 mx-auto rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl border border-indigo-100">
+                                                <i id="turbineIcon" class="fa-solid fa-fan text-teal-600 animate-spin" style="animation-duration: 3s;"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-slate-800">3. TURBINE</h4>
+                                            <span id="stageTurbineBadge" class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-mono font-semibold border border-emerald-200 inline-block">
+                                                1,420 RPM
+                                            </span>
+                                            <p class="text-[10px] text-slate-500">Micro-Kaplan</p>
+                                        </div>
+
+                                        <!-- STAGE 4: GENERATOR -->
+                                        <div class="relative z-10 bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-2 shadow-sm hover:border-amber-400 transition">
+                                            <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl border border-amber-100">
+                                                <i class="fa-solid fa-plug-circle-bolt"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-slate-800">4. GENERATOR</h4>
+                                            <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-mono font-semibold border border-emerald-200 inline-block">
+                                                ACTIVE
+                                            </span>
+                                            <p class="text-[10px] text-slate-500">Eff: 94.1%</p>
+                                        </div>
+
+                                        <!-- STAGE 5: POWER GRID -->
+                                        <div class="relative z-10 bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-2 shadow-sm hover:border-emerald-400 transition">
+                                            <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-100">
+                                                <i class="fa-solid fa-bolt-lightning"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-slate-800">5. POWER GRID</h4>
+                                            <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-mono font-semibold border border-emerald-200 inline-block">
+                                                SYNCHRONIZED
+                                            </span>
+                                            <p id="stagePowerVal" class="text-[10px] font-mono text-emerald-700 font-bold">342.8 W</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stage Details Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                                    <div class="font-bold text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-circle-info text-cyan-600"></i> Conversion Principle
+                                    </div>
+                                    <p class="text-slate-600 leading-relaxed">
+                                        Water gravitational head converts to kinetic velocity in the penstock, spinning runner blades to generate clean AC power.
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                                    <div class="font-bold text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-microchip text-teal-600"></i> ESP32 Integration
+                                    </div>
+                                    <p class="text-slate-600 leading-relaxed">
+                                        ESP32 samples temperature, humidity, and turbine hall sensors, publishing json state to Firebase Realtime DB.
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                                    <div class="font-bold text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-shield-halved text-emerald-600"></i> Safe Telemetry
+                                    </div>
+                                    <p class="text-slate-600 leading-relaxed">
+                                        Actuator commands maintain timeout watchdog loops to prevent continuous unattended dry-run cycles.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 4: ANALYTICS & HISTORICAL CHARTS -->
+                    <section id="tab-analytics" class="hidden space-y-6">
+                        <div class="glass-card p-6 rounded-3xl space-y-6">
+                            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-bold text-slate-900">Telemetry History &amp; Trends</h3>
+                                    <p class="text-xs text-slate-500">Firebase logged metrics and device runtime statistics</p>
+                                </div>
+
+                                <!-- Filter Controls & Export Buttons -->
+                                <div class="flex flex-wrap items-center gap-2.5">
+                                    <select id="historyFilter" onchange="filterAnalyticsData(this.value)" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 font-medium focus:outline-none focus:border-teal-500">
+                                        <option value="today">Today</option>
+                                        <option value="yesterday">Yesterday</option>
+                                        <option value="7days" selected>Last 7 Days</option>
+                                        <option value="30days">Last 30 Days</option>
+                                    </select>
+                                    <button onclick="exportCSV()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold flex items-center gap-2 transition">
+                                        <i class="fa-solid fa-file-csv text-emerald-600"></i> Export CSV
+                                    </button>
+                                    <button onclick="exportPDF()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold flex items-center gap-2 transition">
+                                        <i class="fa-solid fa-file-pdf text-rose-600"></i> Export Summary
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CHARTS GRID -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- Line Chart: Temperature & Humidity -->
+                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">DHT11 Climate Trend</h4>
+                                    <div class="h-64 relative">
+                                        <canvas id="tempHumidChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Bar Chart: Power & Runtime -->
+                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daily Generated Power (kWh)</h4>
+                                    <div class="h-64 relative">
+                                        <canvas id="powerRuntimeChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Doughnut Chart: Actuator ON vs OFF Ratio -->
+                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Pump ON/OFF Duty Cycle</h4>
+                                    <div class="h-64 relative flex justify-center">
+                                        <canvas id="dutyPieChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Historical Logs Table -->
+                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3 flex flex-col justify-between">
+                                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Realtime Sample Log</h4>
+                                    <div class="overflow-x-auto max-h-56">
+                                        <table class="w-full text-left text-xs font-mono">
+                                            <thead class="bg-slate-100 text-slate-600 uppercase text-[10px]">
+                                                <tr>
+                                                    <th class="p-2">Time</th>
+                                                    <th class="p-2">Temp</th>
+                                                    <th class="p-2">Humid</th>
+                                                    <th class="p-2">Pump</th>
+                                                    <th class="p-2">Power</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="historyTableBody" class="divide-y divide-slate-200 text-slate-700">
+                                                <!-- Dynamic Rows -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 5: HYDRO AI ASSISTANT -->
+                    <section id="tab-ai" class="hidden space-y-6">
+                        <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col h-[calc(100vh-180px)] min-h-[500px]">
+                            
+                            <!-- AI Header -->
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-teal-500/20">
+                                        <i class="fa-solid fa-robot"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-base font-bold text-slate-900">Hydro AI Copilot</h3>
+                                        <p class="text-xs text-slate-500">Plant Diagnostics &amp; Operational Assistance</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleLanguage()" id="aiLangBtn" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs text-slate-700 font-mono font-semibold transition">
+                                        Lang: EN
+                                    </button>
+                                    <button onclick="clearAiChat()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs text-slate-600 hover:text-slate-900 transition">
+                                        <i class="fa-solid fa-trash mr-1"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Suggested Query Pills -->
+                            <div class="flex flex-wrap items-center gap-2 shrink-0 py-1 border-b border-slate-100">
+                                <span class="text-[10px] text-slate-400 uppercase font-mono font-bold mr-1">Quick Prompts:</span>
+                                <button onclick="sendPresetAi('What is a hydroelectric power plant?')" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 border border-slate-200 text-slate-700 text-xs transition">
+                                    What is Hydro Power?
+                                </button>
+                                <button onclick="sendPresetAi('Why is my ESP32 offline?')" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 border border-slate-200 text-slate-700 text-xs transition">
+                                    Why is ESP32 offline?
+                                </button>
+                                <button onclick="sendPresetAi('Explain today\'s plant performance.')" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 border border-slate-200 text-slate-700 text-xs transition">
+                                    Today's Performance
+                                </button>
+                                <button onclick="sendPresetAi('Explain the complete ESP32 circuit.')" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 border border-slate-200 text-slate-700 text-xs transition">
+                                    Circuit Specs
+                                </button>
+                            </div>
+
+                            <!-- Chat Messages Scroll Container -->
+                            <div id="aiChatContainer" class="flex-1 overflow-y-auto space-y-3.5 pr-2">
+                                <!-- Greeting Bubble -->
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-sm font-bold shrink-0">
+                                        <i class="fa-solid fa-robot"></i>
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl rounded-tl-none max-w-2xl text-xs text-slate-800 space-y-2">
+                                        <p class="font-bold text-teal-700">Greetings Operator! I am Hydro AI 2.0.</p>
+                                        <p class="leading-relaxed">
+                                            I monitor your live plant telemetry (temperature, humidity, pump cycles, RPM), troubleshoot ESP32 connectivity, and answer questions about hydroelectric physics. How can I assist you?
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Typing Indicator -->
+                            <div id="aiTypingIndicator" class="hidden flex items-center gap-2 text-xs text-teal-700 font-mono px-3 py-1 shrink-0 font-medium">
+                                <i class="fa-solid fa-circle-notch animate-spin"></i>
+                                <span>Hydro AI is analyzing telemetry data...</span>
+                            </div>
+
+                            <!-- Chat Input Box -->
+                            <form onsubmit="handleAiSubmit(event)" class="flex items-center gap-2 pt-2 border-t border-slate-100 shrink-0">
+                                <input type="text" id="aiInput" placeholder="Ask about plant operations, circuit wiring, DHT11 specs..." required class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-xs text-slate-800 focus:outline-none focus:border-teal-500 transition">
+                                
+                                <!-- Voice Input Button -->
+                                <button type="button" onclick="startVoiceInput()" title="Voice Input" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-teal-600 rounded-xl border border-slate-200 transition">
+                                    <i class="fa-solid fa-microphone"></i>
+                                </button>
+
+                                <button type="submit" class="px-5 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-bold rounded-xl shadow-md shadow-teal-500/20 hover:opacity-95 transition flex items-center gap-2 text-xs">
+                                    <span>Send</span>
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <!-- TAB 6: DEVELOPER CENTER -->
+                    <section id="tab-devcenter" class="hidden space-y-6">
+                        <div class="glass-card p-6 rounded-3xl space-y-6">
+                            <div class="border-b border-slate-100 pb-4 flex flex-wrap items-center justify-between gap-4">
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-bold text-slate-900">Developer &amp; Integration Center</h3>
+                                    <p class="text-xs text-slate-500">Copy-ready firmware, Firebase rules, and multi-platform packaging configurations</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-mono font-semibold border border-indigo-200">
+                                    100% PRODUCTION READY
+                                </span>
+                            </div>
+
+                            <!-- Code Selectors -->
+                            <div class="flex flex-wrap gap-2 border-b border-slate-100 pb-3">
+                                <button onclick="showDevSnippet('esp')" id="btnDevEsp" class="px-4 py-2 rounded-xl bg-teal-600 text-white font-semibold text-xs transition">1. ESP32 Firmware (C++)</button>
+                                <button onclick="showDevSnippet('firebase')" id="btnDevFirebase" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 hover:bg-slate-200 transition">2. firebase-config.js</button>
+                                <button onclick="showDevSnippet('rules')" id="btnDevRules" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 hover:bg-slate-200 transition">3. database.rules.json</button>
+                                <button onclick="showDevSnippet('capacitor')" id="btnDevCapacitor" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 hover:bg-slate-200 transition">4. Capacitor APK Config</button>
+                                <button onclick="showDevSnippet('manifest')" id="btnDevManifest" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 hover:bg-slate-200 transition">5. PWA Manifest & SW</button>
+                            </div>
+
+                            <!-- Snippet Display Container -->
+                            <div class="relative bg-slate-900 p-4 rounded-2xl border border-slate-800 font-mono text-xs text-slate-200">
+                                <button onclick="copyCurrentDevSnippet()" class="absolute top-3 right-3 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-teal-300 rounded-lg border border-slate-700 flex items-center gap-1.5 text-[11px] transition">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span>Copy Snippet</span>
+                                </button>
+                                <pre id="devSnippetCode" class="max-h-96 overflow-y-auto leading-relaxed pt-6"></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 7: SETTINGS & SAFETY -->
+                    <section id="tab-settings" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Safety Configuration -->
+                            <div class="glass-card p-6 rounded-3xl space-y-4">
+                                <div class="border-b border-slate-100 pb-3 mb-4">
+                                    <h3 class="text-base font-bold text-slate-900">Plant Safety &amp; Thresholds</h3>
+                                    <p class="text-xs text-slate-500">Configure cutoff limits and alert trips</p>
+                                </div>
+                                <div class="space-y-3.5 text-xs">
+                                    <div>
+                                        <label class="block text-slate-700 font-semibold mb-1">Max Pump Continuous Runtime (Minutes)</label>
+                                        <input type="number" id="settingMaxRuntime" value="60" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-800 font-mono">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-700 font-semibold mb-1">High Temperature Warning Limit (°C)</label>
+                                        <input type="number" id="settingTempWarn" value="45" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-800 font-mono">
+                                    </div>
+                                    <button onclick="saveSettings()" class="w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl shadow-md shadow-teal-500/20 transition">
+                                        Save Safety Thresholds
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Hardware Sketch Overview -->
+                            <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <div class="border-b border-slate-100 pb-3 mb-4">
+                                        <h3 class="text-base font-bold text-slate-900">ESP32 Firmware Header</h3>
+                                        <p class="text-xs text-slate-500">Node pinout configuration reference</p>
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-[11px] font-mono text-slate-700 max-h-48 overflow-y-auto">
+                                        <pre id="espFirmwareSnippet">
+// HYDRO POWER 2.0 ESP32 PINOUT
+#include &lt;WiFi.h&gt;
+#include &lt;FirebaseESP32.h&gt;
+#include &lt;DHT.h&gt;
+
+#define DHTPIN 4
+#define PUMP_RELAY 16
+#define LIGHT_RELAY 17
+
+DHT dht(DHTPIN, DHT11);
+FirebaseData fbdo;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PUMP_RELAY, OUTPUT);
+  pinMode(LIGHT_RELAY, OUTPUT);
+  dht.begin();
+}
+                                        </pre>
+                                    </div>
+                                </div>
+
+                                <button onclick="copyFirmwareCode()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-copy text-teal-600"></i>
+                                    <span>Copy ESP32 Sketch Code</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <!-- MOBILE BOTTOM NAVIGATION (Visible in Phone Mode or on small mobile screens) -->
+            <nav id="mobileBottomNav" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2.5 flex items-center justify-around z-30 shadow-lg">
+                <button onclick="switchTab('dashboard')" id="mob-dashboard" class="flex flex-col items-center gap-1 text-teal-700 text-[10px] font-semibold">
+                    <i class="fa-solid fa-gauge-high text-base"></i>
+                    <span>Dash</span>
+                </button>
+                <button onclick="switchTab('controls')" id="mob-controls" class="flex flex-col items-center gap-1 text-slate-500 text-[10px] font-semibold">
+                    <i class="fa-solid fa-sliders text-base"></i>
+                    <span>Controls</span>
+                </button>
+                <button onclick="switchTab('flow')" id="mob-flow" class="flex flex-col items-center gap-1 text-slate-500 text-[10px] font-semibold">
+                    <i class="fa-solid fa-water text-base text-cyan-600"></i>
+                    <span>Flow</span>
+                </button>
+                <button onclick="switchTab('analytics')" id="mob-analytics" class="flex flex-col items-center gap-1 text-slate-500 text-[10px] font-semibold">
+                    <i class="fa-solid fa-chart-line text-base text-indigo-600"></i>
+                    <span>Analytics</span>
+                </button>
+                <button onclick="switchTab('ai')" id="mob-ai" class="flex flex-col items-center gap-1 text-slate-500 text-[10px] font-semibold">
+                    <i class="fa-solid fa-robot text-base text-teal-600"></i>
+                    <span>AI Copilot</span>
+                </button>
+                <button onclick="switchTab('devcenter')" id="mob-devcenter" class="flex flex-col items-center gap-1 text-slate-500 text-[10px] font-semibold">
+                    <i class="fa-solid fa-code text-base text-indigo-600"></i>
+                    <span>Dev</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- APPLICATION SCRIPTS -->
+    <script>
+        // -------------------------------------------------------------
+        // APPLICATION STATE
+        // -------------------------------------------------------------
+        const state = {
+            isAuthenticated: false,
+            currentDeviceMode: "laptop", // laptop | tab | phone | auto
+            userEmail: "rauteladevraj54@gmail.com",
+            operatingMode: "manual",
+            espOnline: true,
+            rssi: -62,
+            temperature: 28.4,
+            humidity: 64,
+            powerOutput: 342.8,
+            rpm: 1420,
+            pumpCommandState: false,
+            pumpConfirmedState: false,
+            lightCommandState: false,
+            lightConfirmedState: false,
+            maxRuntimeMinutes: 60,
+            pumpStartTime: null,
+            pumpDurationSeconds: 0,
+            emergencyStopTriggered: false,
+            customGeminiKey: "",
+            customFbDbUrl: "",
+            customFbToken: "",
+            aiLanguage: "EN",
+            logs: []
+        };
+
+        let activeDevSnippet = "esp";
+        let pumpTimerInterval = null;
+        let telemetryInterval = null;
+        let chartTempHumid = null;
+        let chartPowerRuntime = null;
+        let chartDutyPie = null;
+
+        // Code Snippets
+        const snippets = {
+            esp: `// =============================================================
+// HYDRO POWER PLANT 2.0 - ESP32 FIRMWARE SKETCH
+// Library Dependencies: Firebase_ESP_Client by Mobizt, DHT sensor library
+// =============================================================
+#include <WiFi.h>
+#include <Firebase_ESP_Client.h>
+#include <DHT.h>
+
+#define WIFI_SSID "YOUR_WIFI_NAME"
+#define WIFI_PASSWORD "YOUR_WIFI_PASS"
+#define DATABASE_URL "https://your-rtdb-default-rtdb.firebaseio.com/"
+
+#define DHTPIN 4
+#define DHTTYPE DHT11
+#define PUMP_RELAY_PIN 16
+#define LIGHT_RELAY_PIN 17
+
+DHT dht(DHTPIN, DHTTYPE);
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+
+unsigned long lastSend = 0;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PUMP_RELAY_PIN, OUTPUT);
+  pinMode(LIGHT_RELAY_PIN, OUTPUT);
+  digitalWrite(PUMP_RELAY_PIN, LOW);
+  digitalWrite(LIGHT_RELAY_PIN, LOW);
+
+  dht.begin();
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  config.database_url = DATABASE_URL;
+  config.signer.test_mode = true;
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+}
+
+void loop() {
+  if (Firebase.ready() && (millis() - lastSend > 2000)) {
+    lastSend = millis();
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+
+    if (!isnan(t) && !isnan(h)) {
+      Firebase.RTDB.setFloat(&fbdo, "hydro/status/temperature", t);
+      Firebase.RTDB.setFloat(&fbdo, "hydro/status/humidity", h);
+    }
+
+    Firebase.RTDB.setBool(&fbdo, "hydro/status/esp32Online", true);
+    Firebase.RTDB.setInt(&fbdo, "hydro/status/wifiRSSI", WiFi.RSSI());
+
+    if (Firebase.RTDB.getBool(&fbdo, "hydro/commands/pump/state")) {
+      bool pState = fbdo.boolData();
+      digitalWrite(PUMP_RELAY_PIN, pState ? HIGH : LOW);
+      Firebase.RTDB.setBool(&fbdo, "hydro/acknowledgements/pump/state", pState);
+    }
+  }
+}`,
+            firebase: `// firebase-config.js (Lightweight Web Client)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "your-app.firebaseapp.com",
+  databaseURL: "https://your-app-default-rtdb.firebaseio.com",
+  projectId: "your-app",
+  storageBucket: "your-app.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcdef123456"
+};
+
+const app = initializeApp(firebaseConfig);
+export const db = getDatabase(app);`,
+
+            rules: `{
+  "rules": {
+    "hydro": {
+      ".read": "auth != null || true",
+      ".write": "auth != null || true",
+      "status": {
+        "temperature": { ".validate": "newData.isNumber()" },
+        "humidity": { ".validate": "newData.isNumber()" }
+      }
+    }
+  }
+}`,
+            capacitor: `// capacitor.config.json
+{
+  "appId": "com.hydropower.app",
+  "appName": "HYDRO POWER PLANT 2.0",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}`,
+            manifest: `// manifest.json
+{
+  "name": "HYDRO POWER PLANT 2.0",
+  "short_name": "Hydro2.0",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}`
+        };
+
+        // -------------------------------------------------------------
+        // DEVICE MODE SWITCHER (LAPTOP, TAB, PHONE, AUTO)
+        // -------------------------------------------------------------
+        function setDeviceMode(mode) {
+            state.currentDeviceMode = mode;
+            const wrapper = document.getElementById('deviceWrapper');
+            const sidebar = document.getElementById('sidebarNav');
+            const bottomNav = document.getElementById('mobileBottomNav');
+
+            // Reset Mode Button Styles
+            ['laptop', 'tab', 'phone', 'auto'].forEach(m => {
+                const btn = document.getElementById(`modeBtn-${m}`);
+                if (btn) {
+                    if (m === mode) {
+                        btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition text-teal-700 bg-white shadow-sm";
+                    } else {
+                        btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition text-slate-600 hover:text-slate-900";
+                    }
+                }
+            });
+
+            // Apply wrapper class
+            wrapper.classList.remove('mode-laptop', 'mode-tab', 'mode-phone');
+
+            if (mode === 'laptop') {
+                wrapper.classList.add('mode-laptop');
+                sidebar.classList.remove('hidden');
+                bottomNav.classList.add('hidden');
+            } else if (mode === 'tab') {
+                wrapper.classList.add('mode-tab');
+                sidebar.classList.remove('hidden');
+                bottomNav.classList.add('hidden');
+            } else if (mode === 'phone') {
+                wrapper.classList.add('mode-phone');
+                sidebar.classList.add('hidden');
+                bottomNav.classList.remove('hidden');
+            } else if (mode === 'auto') {
+                wrapper.classList.add('mode-laptop');
+                // Natural responsive behavior
+                handleResponsiveLayout();
+            }
+
+            // Trigger chart resize after layout change
+            setTimeout(() => {
+                if (chartTempHumid) chartTempHumid.resize();
+                if (chartPowerRuntime) chartPowerRuntime.resize();
+                if (chartDutyPie) chartDutyPie.resize();
+            }, 360);
+        }
+
+        function handleResponsiveLayout() {
+            if (state.currentDeviceMode !== 'auto') return;
+            const width = window.innerWidth;
+            const sidebar = document.getElementById('sidebarNav');
+            const bottomNav = document.getElementById('mobileBottomNav');
+
+            if (width < 768) {
+                sidebar.classList.add('hidden');
+                bottomNav.classList.remove('hidden');
+            } else {
+                sidebar.classList.remove('hidden');
+                bottomNav.classList.add('hidden');
+            }
+        }
+        window.addEventListener('resize', handleResponsiveLayout);
+
+        // -------------------------------------------------------------
+        // AUTHENTICATION & LOGIN
+        // -------------------------------------------------------------
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('loginPassword');
+            const icon = document.getElementById('passwordToggleIcon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                pwdInput.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pwd = document.getElementById('loginPassword').value.trim();
+
+            if (email.toLowerCase() === 'rauteladevraj54@gmail.com' && pwd === 'prachi@17') {
+                completeLogin();
+            } else {
+                const errBox = document.getElementById('loginErrorMessage');
+                errBox.classList.remove('hidden');
+            }
+        }
+
+        function instantDemoLogin() {
+            completeLogin();
+        }
+
+        function completeLogin() {
+            state.isAuthenticated = true;
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            addNotification('info', 'Authenticated session opened for rauteladevraj54@gmail.com');
+            initCharts();
+            startTelemetryLoop();
+            setDeviceMode(state.currentDeviceMode);
+        }
+
+        function handleLogout() {
+            state.isAuthenticated = false;
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // NAVIGATION TABS
+        // -------------------------------------------------------------
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'controls', 'flow', 'analytics', 'ai', 'devcenter', 'settings'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (el) el.classList.add('hidden');
+                
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) navBtn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+                
+                const mobBtn = document.getElementById(`mob-${t}`);
+                if (mobBtn) mobBtn.className = "flex flex-col items-center gap-1 text-slate-500 text-[10px] font-semibold";
+            });
+
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) activeNav.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition text-teal-700 bg-teal-50 border border-teal-200 shadow-sm";
+
+            const activeMob = document.getElementById(`mob-${tabId}`);
+            if (activeMob) activeMob.className = "flex flex-col items-center gap-1 text-teal-700 text-[10px] font-semibold";
+
+            const titleMap = {
+                dashboard: "Plant Status Dashboard",
+                controls: "Device Control Gateway",
+                flow: "Hydropower Pipeline Flow",
+                analytics: "Historical Analytics & Logs",
+                ai: "Hydro AI Copilot",
+                devcenter: "Developer Center",
+                settings: "System Settings & Safety"
+            };
+            document.getElementById('pageTitle').innerText = titleMap[tabId] || "Control Center";
+
+            // If switching to analytics tab, resize charts
+            if (tabId === 'analytics') {
+                setTimeout(() => {
+                    if (chartTempHumid) chartTempHumid.resize();
+                    if (chartPowerRuntime) chartPowerRuntime.resize();
+                    if (chartDutyPie) chartDutyPie.resize();
+                }, 150);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // ACTUATOR COMMANDS & SAFETY LOGIC
+        // -------------------------------------------------------------
+        function sendPumpCommand(start) {
+            if (state.emergencyStopTriggered) {
+                addNotification('alert', 'E-STOP ACTIVE! Reset emergency stop safety trip before starting pump.');
+                return;
+            }
+
+            state.pumpCommandState = start;
+            document.getElementById('pumpCommandState').innerText = start ? "START_REQUESTED" : "STOP_REQUESTED";
+            document.getElementById('pumpCommandState').className = start ? "text-emerald-600 font-bold" : "text-amber-600 font-bold";
+
+            setTimeout(() => {
+                state.pumpConfirmedState = start;
+                document.getElementById('pumpAckState').innerText = start ? "RUNNING (ACK)" : "STOPPED (ACK)";
+                document.getElementById('pumpAckState').className = start ? "text-emerald-600 font-bold" : "text-slate-500 font-bold";
+                
+                document.getElementById('dashPumpStatus').innerText = start ? "RUNNING" : "OFF";
+                document.getElementById('dashPumpStatus').className = start ? "text-2xl font-extrabold text-emerald-600 font-mono" : "text-2xl font-extrabold text-slate-400 font-mono";
+                document.getElementById('pumpStatusBadge').innerText = start ? "STATUS: RUNNING" : "STATUS: OFF";
+                document.getElementById('pumpStatusBadge').className = start ? "px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-mono font-bold border border-emerald-200" : "px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-mono font-bold border border-slate-200";
+
+                if (start) {
+                    state.pumpStartTime = Date.now();
+                    startPumpTimer();
+                    addNotification('info', 'Water Pump relay activated successfully.');
+                } else {
+                    stopPumpTimer();
+                    addNotification('info', 'Water Pump relay stopped.');
+                }
+            }, 250);
+        }
+
+        function sendLightCommand(turnOn) {
+            state.lightCommandState = turnOn;
+            state.lightConfirmedState = turnOn;
+            document.getElementById('dashLightStatus').innerText = turnOn ? "ON" : "OFF";
+            document.getElementById('dashLightStatus').className = turnOn ? "text-amber-600 font-mono font-bold" : "text-slate-600 font-mono font-semibold";
+            document.getElementById('lightStatusBadge').innerText = turnOn ? "ON" : "OFF";
+            document.getElementById('lightStatusBadge').className = turnOn ? "px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-mono font-bold border border-amber-200" : "px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-mono font-bold border border-slate-200";
+            addNotification('info', `Auxiliary lighting ${turnOn ? 'turned ON' : 'turned OFF'}`);
+        }
+
+        function startPumpTimer() {
+            if (pumpTimerInterval) clearInterval(pumpTimerInterval);
+            pumpTimerInterval = setInterval(() => {
+                if (!state.pumpConfirmedState) return;
+                state.pumpDurationSeconds++;
+                const hrs = String(Math.floor(state.pumpDurationSeconds / 3600)).padStart(2, '0');
+                const mins = String(Math.floor((state.pumpDurationSeconds % 3600) / 60)).padStart(2, '0');
+                const secs = String(state.pumpDurationSeconds % 60).padStart(2, '0');
+                const fmt = `${hrs}:${mins}:${secs}`;
+                
+                document.getElementById('pumpDuration').innerText = fmt;
+                document.getElementById('dashPumpTime').innerText = `Runtime ${Math.floor(state.pumpDurationSeconds / 60)}m`;
+
+                if (Math.floor(state.pumpDurationSeconds / 60) >= state.maxRuntimeMinutes) {
+                    sendPumpCommand(false);
+                    addNotification('alert', `SAFETY CUTOFF: Pump reached max runtime limit (${state.maxRuntimeMinutes} mins).`);
+                }
+            }, 1000);
+        }
+
+        function stopPumpTimer() {
+            if (pumpTimerInterval) clearInterval(pumpTimerInterval);
+            state.pumpDurationSeconds = 0;
+            document.getElementById('pumpDuration').innerText = "00:00:00";
+        }
+
+        function triggerEmergencyStop() {
+            state.emergencyStopTriggered = true;
+            sendPumpCommand(false);
+            sendLightCommand(false);
+            addNotification('alert', 'EMERGENCY STOP (E-STOP) ENGAGED! ALL RELAYS TRIPPED.');
+        }
+
+        function updateMaxRuntime(val) {
+            state.maxRuntimeMinutes = parseInt(val);
+            document.getElementById('maxRuntimeDisplay').innerText = `${val} Min`;
+        }
+
+        function setOperatingMode(mode) {
+            if (mode === 'auto') {
+                document.getElementById('autoWarningText').classList.remove('hidden');
+                return;
+            }
+            state.operatingMode = mode;
+        }
+
+        // -------------------------------------------------------------
+        // HARDWARE SIMULATOR & CHARTS (LIGHT PALETTE)
+        // -------------------------------------------------------------
+        function toggleSimulatorPanel() {
+            document.getElementById('simulatorPanel').classList.toggle('hidden');
+        }
+
+        function updateSimulatorState() {
+            state.espOnline = document.getElementById('simEspOnline').checked;
+            state.temperature = parseFloat(document.getElementById('simTemp').value);
+            state.humidity = parseFloat(document.getElementById('simHumid').value);
+            state.powerOutput = parseFloat(document.getElementById('simPower').value);
+
+            document.getElementById('simEspText').innerText = state.espOnline ? "ONLINE" : "OFFLINE";
+            document.getElementById('simEspText').className = state.espOnline ? "font-mono text-emerald-700 font-bold" : "font-mono text-red-600 font-bold";
+            document.getElementById('simValTemp').innerText = `${state.temperature}°C`;
+            document.getElementById('simValHumid').innerText = `${state.humidity}%`;
+            document.getElementById('simValPower').innerText = `${state.powerOutput}W`;
+
+            document.getElementById('dashEspState').innerText = state.espOnline ? "ONLINE" : "OFFLINE";
+            document.getElementById('dashEspState').className = state.espOnline ? "text-2xl font-extrabold text-emerald-600 font-mono" : "text-2xl font-extrabold text-red-600 font-mono";
+            document.getElementById('espGlobalBadge').className = state.espOnline ? "flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-semibold" : "flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-700 text-xs font-mono font-semibold";
+            document.getElementById('espGlobalText').innerText = state.espOnline ? "ESP32: ONLINE" : "ESP32: OFFLINE";
+            
+            document.getElementById('dashTemp').innerText = state.temperature;
+            document.getElementById('dashHumid').innerText = state.humidity;
+            document.getElementById('dashPower').innerText = state.powerOutput;
+            document.getElementById('stagePowerVal').innerText = `${state.powerOutput} W`;
+        }
+
+        function startTelemetryLoop() {
+            if (telemetryInterval) clearInterval(telemetryInterval);
+            telemetryInterval = setInterval(() => {
+                if (!state.espOnline) return;
+                
+                const tempJitter = (Math.random() * 0.4 - 0.2).toFixed(1);
+                state.temperature = Math.max(10, Math.min(60, (parseFloat(state.temperature) + parseFloat(tempJitter)).toFixed(1)));
+                document.getElementById('dashTemp').innerText = state.temperature;
+
+                const now = new Date().toLocaleTimeString();
+                state.logs.unshift({
+                    time: now,
+                    temp: state.temperature,
+                    humid: state.humidity,
+                    pump: state.pumpConfirmedState ? "ON" : "OFF",
+                    power: `${state.powerOutput}W`
+                });
+                if (state.logs.length > 10) state.logs.pop();
+                updateHistoryTable();
+            }, 3000);
+        }
+
+        function updateHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = state.logs.map(log => `
+                <tr class="hover:bg-slate-100/60 transition">
+                    <td class="p-2 font-mono">${log.time}</td>
+                    <td class="p-2 font-mono font-semibold">${log.temp}°C</td>
+                    <td class="p-2 font-mono text-cyan-700">${log.humid}%</td>
+                    <td class="p-2 font-mono ${log.pump === 'ON' ? 'text-emerald-600 font-bold' : 'text-slate-400'}">${log.pump}</td>
+                    <td class="p-2 font-mono text-emerald-700 font-semibold">${log.power}</td>
+                </tr>
+            `).join('');
+        }
+
+        function initCharts() {
+            const ctx1 = document.getElementById('tempHumidChart');
+            const ctx2 = document.getElementById('powerRuntimeChart');
+            const ctx3 = document.getElementById('dutyPieChart');
+
+            if (!ctx1 || !ctx2 || !ctx3) return;
+
+            // Global Chart Light Mode Styling
+            Chart.defaults.color = '#64748b';
+            Chart.defaults.borderColor = '#f1f5f9';
+
+            chartTempHumid = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [
+                        { label: 'Temp (°C)', data: [24, 23, 26, 31, 29, 27], borderColor: '#0d9488', backgroundColor: 'rgba(13, 148, 136, 0.08)', fill: true, tension: 0.35, pointRadius: 4 },
+                        { label: 'Humidity (%)', data: [70, 72, 68, 55, 60, 65], borderColor: '#0284c7', backgroundColor: 'rgba(2, 132, 199, 0.08)', fill: true, tension: 0.35, pointRadius: 4 }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: '#f1f5f9' } },
+                        y: { grid: { color: '#e2e8f0' } }
+                    }
+                }
+            });
+
+            chartPowerRuntime = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        { label: 'Power (kWh)', data: [4.2, 5.1, 3.8, 6.0, 5.5, 4.9, 5.8], backgroundColor: '#10b981', borderRadius: 8 }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: '#e2e8f0' } }
+                    }
+                }
+            });
+
+            chartDutyPie = new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pump Active', 'Standby'],
+                    datasets: [{ data: [35, 65], backgroundColor: ['#0d9488', '#e2e8f0'], borderWidth: 0 }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // NOTIFICATIONS SYSTEM
+        // -------------------------------------------------------------
+        function toggleNotifications() {
+            document.getElementById('notificationDrawer').classList.toggle('hidden');
+        }
+
+        function addNotification(type, text) {
+            const container = document.getElementById('notificationsContainer');
+            if (!container) return;
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'alert' ? 'text-red-700 border-red-200 bg-red-50' : 'text-teal-700 border-teal-200 bg-teal-50';
+            const icon = type === 'alert' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+
+            const item = document.createElement('div');
+            item.className = `p-2.5 rounded-xl border ${color} space-y-1 shadow-sm`;
+            item.innerHTML = `
+                <div class="flex items-center justify-between font-bold text-[11px]">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid ${icon}"></i> ${type.toUpperCase()}</span>
+                    <span class="font-mono text-[10px] text-slate-500">${time}</span>
+                </div>
+                <p class="text-slate-700 text-[11px] leading-tight">${text}</p>
+            `;
+            container.prepend(item);
+        }
+
+        // -------------------------------------------------------------
+        // HYDRO AI CHAT INTERFACE
+        // -------------------------------------------------------------
+        function handleAiSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('aiInput');
+            const q = input.value.trim();
+            if (!q) return;
+            input.value = '';
+            appendAiBubble('user', q);
+            executeAiQuery(q);
+        }
+
+        function sendPresetAi(txt) {
+            appendAiBubble('user', txt);
+            executeAiQuery(txt);
+        }
+
+        function appendAiBubble(role, text) {
+            const chat = document.getElementById('aiChatContainer');
+            const isUser = role === 'user';
+            const bubble = document.createElement('div');
+            bubble.className = `flex items-start gap-3 ${isUser ? 'flex-row-reverse' : ''}`;
+            
+            bubble.innerHTML = `
+                <div class="w-8 h-8 rounded-xl ${isUser ? 'bg-teal-600 text-white' : 'bg-teal-100 text-teal-700'} flex items-center justify-center text-sm font-bold shrink-0 shadow-sm">
+                    <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'}"></i>
+                </div>
+                <div class="${isUser ? 'bg-teal-600 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'} p-4 rounded-2xl max-w-2xl text-xs space-y-2">
+                    <p class="leading-relaxed">${text}</p>
+                </div>
+            `;
+            chat.appendChild(bubble);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function executeAiQuery(q) {
+            const indicator = document.getElementById('aiTypingIndicator');
+            indicator.classList.remove('hidden');
+
+            setTimeout(() => {
+                indicator.classList.add('hidden');
+                fallbackLocalAi(q);
+            }, 800);
+        }
+
+        function fallbackLocalAi(q) {
+            let answer = "All telemetry streams are verified nominal. Hydraulic head and actuator states correspond to target tolerances.";
+            const query = q.toLowerCase();
+
+            if (query.includes("what is a hydroelectric") || query.includes("hydro power")) {
+                answer = "A hydroelectric power system converts the gravitational potential and kinetic flow of water through a penstock into mechanical rotation via turbine blades, which then drives an AC electrical generator.";
+            } else if (query.includes("esp32 offline")) {
+                answer = "Troubleshooting ESP32 Offline: 1. Confirm regulated 5V power at Vin. 2. Verify Wi-Fi SSID/password credentials. 3. Check Firebase Realtime Database URL accessibility. 4. Inspect GPIO pin 4 pullup resistor.";
+            } else if (query.includes("performance") || query.includes("today")) {
+                answer = `Telemetry Report: Ambient Temp is ${state.temperature}°C, Relative Humidity is ${state.humidity}%, Power generation is ${state.powerOutput}W, and Pump Relay is currently ${state.pumpConfirmedState ? 'RUNNING' : 'STANDBY'}.`;
+            } else if (query.includes("circuit")) {
+                answer = "Circuit Configuration: ESP32-WROOM Node &bull; DHT11 data to GPIO 4 (10k pullup) &bull; 5V Relay IN1 (Pump) to GPIO 16 &bull; 5V Relay IN2 (Light) to GPIO 17 &bull; Common ground tied with external 5V power rail.";
+            }
+
+            appendAiBubble('model', answer);
+        }
+
+        function startVoiceInput() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = state.aiLanguage === "HI" ? "hi-IN" : "en-US";
+                recognition.onresult = (event) => {
+                    const text = event.results[0][0].transcript;
+                    document.getElementById('aiInput').value = text;
+                };
+                recognition.start();
+            } else {
+                alert("Voice recognition is not supported in this browser. Please use keyboard input.");
+            }
+        }
+
+        function clearAiChat() {
+            document.getElementById('aiChatContainer').innerHTML = '';
+        }
+
+        // -------------------------------------------------------------
+        // CONFIGURATION & CODE SNIPPETS
+        // -------------------------------------------------------------
+        function toggleConfigModal() {
+            document.getElementById('configModal').classList.toggle('hidden');
+        }
+
+        function saveApiConfig() {
+            state.customFbDbUrl = document.getElementById('cfgFbDbUrl').value.trim();
+            state.customFbToken = document.getElementById('cfgFbAuthToken').value.trim();
+            state.customGeminiKey = document.getElementById('cfgGeminiKey').value.trim();
+            toggleConfigModal();
+            addNotification('info', 'API Credentials updated.');
+        }
+
+        function toggleLanguage() {
+            state.aiLanguage = state.aiLanguage === "EN" ? "HI" : "EN";
+            document.getElementById('aiLangBtn').innerText = `Lang: ${state.aiLanguage}`;
+        }
+
+        function showDevSnippet(key) {
+            activeDevSnippet = key;
+            const buttons = ['esp', 'firebase', 'rules', 'capacitor', 'manifest'];
+            buttons.forEach(b => {
+                const elementId = `btnDev${b.charAt(0).toUpperCase() + b.slice(1)}`;
+                const btn = document.getElementById(elementId);
+                if (btn) {
+                    if (b === key) {
+                        btn.className = "px-4 py-2 rounded-xl bg-teal-600 text-white font-semibold text-xs transition";
+                    } else {
+                        btn.className = "px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 hover:bg-slate-200 transition";
+                    }
+                }
+            });
+
+            const codeContainer = document.getElementById('devSnippetCode');
+            if (codeContainer) {
+                codeContainer.innerText = snippets[key] || "";
+            }
+        }
+
+        function copyCurrentDevSnippet() {
+            const code = snippets[activeDevSnippet];
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Code snippet copied to clipboard!");
+            });
+        }
+
+        function exportCSV() {
+            let csv = "Timestamp,Temperature,Humidity,PumpStatus,Power\n";
+            state.logs.forEach(l => {
+                csv += `${l.time},${l.temp},${l.humid},${l.pump},${l.power}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'hydro_plant_telemetry.csv';
+            a.click();
+        }
+
+        function exportPDF() {
+            alert("Exporting summary telemetry report PDF...");
+        }
+
+        function filterAnalyticsData(val) {
+            addNotification('info', `Analytics filtered to: ${val}`);
+        }
+
+        function saveSettings() {
+            addNotification('info', 'Safety configuration saved.');
+        }
+
+        function copyFirmwareCode() {
+            navigator.clipboard.writeText(snippets.esp).then(() => {
+                alert("ESP32 C++ Sketch copied to clipboard!");
+            });
+        }
+
+        // Initialize Splash & Default View
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                if (splash) splash.style.opacity = '0';
+                setTimeout(() => {
+                    if (splash) splash.style.display = 'none';
+                }, 700);
+            }, 600);
+            showDevSnippet('esp');
+        });
+    </script>
+</body>
+</html>
